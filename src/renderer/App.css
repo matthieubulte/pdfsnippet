@@ -1,0 +1,107 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+body {
+  position: relative;
+  height: 100vh;
+  background: #f5f5f5;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow-y: hidden;
+  margin: 0%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+#root { height: 100%;}
+
+.AppContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.ReferencesContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: baseline;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.FileRef {
+  display: flex;
+  justify-content: space-between;
+  color: black;
+  background-color: white;
+  margin-bottom: 0.5rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  appearance: none;
+  font-size: 1.3rem;
+  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
+    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+  transition: all ease-in 0.1s;
+  opacity: 0.9;
+  height: fit-content;
+  min-height: 1.5rem;
+  width: 80%;
+  max-width: 40rem;
+}
+.FileRef:hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.FileRef .Name:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.AddFileRef {
+  cursor: pointer;
+  justify-content: center;
+  width: 30%;
+  max-width: 10rem;
+  font-weight: 200;
+}
+
+.Button {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+.Button:hover {
+  transform: scale(1.2);
+}
+
+.ModalBackground {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.FileRefModal {
+  position: absolute;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
+    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+  width: 80%;
+  max-width: 40rem;
+  height: 80%;
+  max-height: 60rem;
+  margin: 2rem;
+  padding: 2rem 1rem;
+  transition: all ease-in 0.1s;
+  display: flex;
+  flex-direction: column;
+}
