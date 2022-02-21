@@ -1,9 +1,94 @@
 /* eslint-disable react/prop-types */
 
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { uuidv4 } from './utils';
+
+const FilePath = ({ value, onChange }) => {
+  const [path, setPath] = useState(value);
+  const el = useRef(null);
+
+  const update = (e) => {
+    const val = e.target.files[0].path;
+    setPath(val);
+    onChange(val);
+  };
+
+  const clicked = () => {
+    el.current.click();
+  };
+
+  const text = path || 'Click to select a path to the PDF';
+
+  return (
+    <div className="FilePath" onClick={clicked}>
+      <span>{text}</span>
+      <input
+        ref={el}
+        type="file"
+        onChange={update}
+        style={{ display: 'none' }}
+      />
+    </div>
+  );
+};
+
+const ImagePaster = ({ value, onChange }) => {
+  const [imgURL, setImgURL] = useState(value);
+  const [waitingForPaste, setWaitingForPaste] = useState(false);
+
+  const startWaiting = () => {
+    setWaitingForPaste(true);
+    document.onpaste = function (pasteEvent) {
+      const item = pasteEvent.clipboardData.items[0];
+      if (item.type.indexOf('image') === 0) {
+        const blob = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const url = event.target.result;
+          setImgURL(url);
+          onChange(url);
+          document.onpaste = function () {};
+          setWaitingForPaste(false);
+        };
+        reader.readAsDataURL(blob);
+      }
+    };
+  };
+
+  useEffect(() => {
+    if (!value) {
+      startWaiting();
+    }
+  }, [value]);
+
+  const onClick = () => {
+    if (waitingForPaste) {
+      document.onpaste = function () {};
+      setWaitingForPaste(false);
+    } else {
+      startWaiting();
+    }
+  };
+
+  return (
+    <div className="ImagePaster" onClick={onClick}>
+      {waitingForPaste && (
+        <div className="Overlay Visible">
+          <div>Ctrl+V to paste new image</div>
+          <div>(click to cancel)</div>
+        </div>
+      )}
+      {waitingForPaste || (
+        <div className="Overlay">
+          <div>Click to change</div>
+        </div>
+      )}
+      <img className={waitingForPaste ? ['Blur'] : []} src={imgURL} />
+    </div>
+  );
+};
 
 const FileRefModal = ({ fileRef, onClose }) => {
   const [name, setName] = useState(fileRef.name);
@@ -12,8 +97,6 @@ const FileRefModal = ({ fileRef, onClose }) => {
   const [imgURL, setImgURL] = useState(fileRef.imgURL);
 
   const leave = () => {
-    document.onpaste = function () {};
-
     fileRef.name = name;
     fileRef.page = page;
     fileRef.pdfPath = pdfPath;
@@ -37,51 +120,31 @@ const FileRefModal = ({ fileRef, onClose }) => {
     };
 
     document.addEventListener('keydown', escFunction, false);
-
-    document.onpaste = function (pasteEvent) {
-      const item = pasteEvent.clipboardData.items[0];
-      if (item.type.indexOf('image') === 0) {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          setImgURL(event.target.result);
-        };
-        reader.readAsDataURL(blob);
-      }
-    };
   });
 
   return (
     <div id="ModalBackground" className="ModalBackground" onClick={onClick}>
       <div className="FileRefModal">
-        <div>
-          Name{' '}
+        <div className="FirstLine">
           <input
-            placeholder="Name"
+            className="NameInput"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <div className="PageInput">
+            <span>p</span>
+            <input
+              placeholder="Page"
+              type="number"
+              value={page}
+              min={1}
+              onChange={(e) => setPage(e.target.value)}
+            />
+          </div>
         </div>
-        <div>
-          Page{' '}
-          <input
-            placeholder="Page"
-            type="number"
-            value={page}
-            min={1}
-            onChange={(e) => setPage(e.target.value)}
-          />
-        </div>
-        <div>
-          PDF Path{' '}
-          <input
-            type="file"
-            onChange={(e) => setPdfPath(e.target.files[0].path)}
-          />
-        </div>
-        <div>
-          <img src={imgURL} />
-        </div>
+
+        <FilePath value={pdfPath} onChange={setPdfPath} />
+        <ImagePaster value={imgURL} onChange={setImgURL} />
       </div>
     </div>
   );
@@ -150,7 +213,7 @@ const ReferencesContainer = () => {
   };
 
   const onRemove = (fr) => {
-    const doDelete = confirm('Are you sure you want to delete this reference?');
+    const doDelete = confirm('Are you sure you want to delete this snippet?');
     if (doDelete) {
       setFileRefs(fileRefs.filter((ofr) => ofr.id !== fr.id));
     }
@@ -163,9 +226,9 @@ const ReferencesContainer = () => {
 
   const createReference = () => {
     setEditedRef({
-      name: '',
+      name: '(Untitled)',
       pdfPath: '',
-      page: 0,
+      page: 1,
       image: '',
     });
     setShowModal(true);
@@ -239,7 +302,7 @@ const ReferencesContainer = () => {
           role="button"
           tabIndex={0}
         >
-          New Reference
+          New Snippet
         </div>
       </div>
 
