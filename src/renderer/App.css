@@ -10,10 +10,22 @@ body {
   overflow-y: hidden;
   margin: 0%;
 }
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+hr {
+  width: 100%;
+  border-top: 0px;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 #root { height: 100%;}
@@ -59,10 +71,27 @@ img {
   transform: scale(1.05);
   opacity: 1;
 }
-
 .FileRef .Name:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+.Search {
+  flex-direction: row;
+}
+.Search:hover {
+  transform: scale(1.0);
+  opacity: 1;
+}
+.Search.Button {
+  opacity: 0.2;
+}
+.Search input {
+  color: black;
+  background-color: white;
+  border: none;
+  font-size: 1.3rem;
+  appearance: none;
+  width: 100%;
 }
 
 .AddFileRef {

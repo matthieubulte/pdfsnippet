@@ -128,6 +128,7 @@ const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
       tabIndex={0}
     >
       {contentRow}
+      {hasImg && <hr />}
       {hasImg && <img src={fileRef.imgURL} />}
     </div>
   );
@@ -137,6 +138,7 @@ const ReferencesContainer = () => {
   const [showModal, setShowModal] = useState(false);
   const [editedRef, setEditedRef] = useState(null);
   const [fileRefs, _setFileRefs] = useState([]);
+  const [searchString, setSearchString] = useState('');
 
   const onOpenPDF = (fr) => {
     window.electron.ipcRenderer.openPdf(fr.pdfPath, fr.page);
@@ -181,6 +183,18 @@ const ReferencesContainer = () => {
     setShowModal(false);
   };
 
+  const searchOn = (fileRefs) => {
+    if (searchString === '') return fileRefs;
+
+    return fileRefs.filter(
+      (fr) => fr.name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0
+    );
+  };
+
+  const clearSearch = () => {
+    setSearchString('');
+  };
+
   useEffect(() => {
     window.electron.ipcRenderer.getReferences();
     window.electron.ipcRenderer.once('get-references', _setFileRefs);
@@ -190,7 +204,27 @@ const ReferencesContainer = () => {
     <div className="AppContainer">
       <h1 style={{ fontWeight: 100 }}>PDF Snippets</h1>
       <div className="ReferencesContainer">
-        {fileRefs.map((fr) => (
+        <div className="FileRef Search">
+          <input
+            placeholder="Search..."
+            type="text"
+            value={searchString}
+            onChange={(e) => {
+              setSearchString(e.target.value);
+            }}
+          />
+          <div
+            className="Button"
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              clearSearch();
+            }}
+          >
+            ✖️
+          </div>
+        </div>
+        {searchOn(fileRefs).map((fr) => (
           <FileRef
             fileRef={fr}
             onOpenPDF={onOpenPDF}
