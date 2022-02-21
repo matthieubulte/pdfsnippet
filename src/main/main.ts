@@ -80,6 +80,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
+    title: 'PDF Snippets',
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
