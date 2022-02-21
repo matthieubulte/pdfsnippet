@@ -88,13 +88,10 @@ const FileRefModal = ({ fileRef, onClose }) => {
 };
 
 const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
-  return (
-    <div
-      className="FileRef"
-      onClick={() => onEdit(fileRef)}
-      role="button"
-      tabIndex={0}
-    >
+  const hasImg = !!fileRef.imgURL;
+
+  const contentRow = (
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div className="Name">{fileRef.name}</div>
       <div style={{ display: 'flex' }}>
         <div
@@ -121,7 +118,17 @@ const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
           🗑
         </div>
       </div>
-      {fileRef.imgURL && <img src={fileRef.imgURL} />}
+    </div>
+  );
+  return (
+    <div
+      className="FileRef"
+      onClick={() => onEdit(fileRef)}
+      role="button"
+      tabIndex={0}
+    >
+      {contentRow}
+      {hasImg && <img src={fileRef.imgURL} />}
     </div>
   );
 };

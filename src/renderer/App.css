@@ -36,6 +36,7 @@ img {
 
 .FileRef {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   color: black;
   background-color: white;
@@ -67,6 +68,7 @@ img {
 .AddFileRef {
   cursor: pointer;
   justify-content: center;
+  flex-direction: row;
   width: 30%;
   max-width: 10rem;
   font-weight: 200;
