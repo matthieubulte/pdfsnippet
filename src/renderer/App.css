@@ -13,7 +13,8 @@ body {
 input:focus,
 select:focus,
 textarea:focus,
-button:focus {
+button:focus,
+div:focus {
     outline: none;
 }
 
@@ -24,6 +25,7 @@ img {
 
 hr {
   width: 100%;
+  margin-top: 5px;
   border-top: 0px;
   border-bottom: 1px solid #d3d3d3;
 }
@@ -109,6 +111,9 @@ hr {
 }
 .Button:hover {
   transform: scale(1.2);
+}
+.Button:focus {
+  outline: auto;
 }
 
 .ModalBackground {

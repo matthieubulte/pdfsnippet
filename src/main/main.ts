@@ -1,22 +1,17 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { promises as fs } from 'fs';
+import AsyncLock from 'async-lock';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 const { exec } = require('child_process');
+
+const dataFileLock = new AsyncLock();
 
 export default class AppUpdater {
   constructor() {
@@ -33,7 +28,9 @@ ipcMain.on('open-pdf', async (event, { pdfpath, page }) => {
 });
 
 ipcMain.on('save-references', async (event, references) => {
-  fs.writeFile('./references.json', JSON.stringify(references, null, 4));
+  dataFileLock.acquire('key', () =>
+    fs.writeFile('./references.json', JSON.stringify(references, null, 4))
+  );
 });
 
 ipcMain.on('get-references', async (event) => {
