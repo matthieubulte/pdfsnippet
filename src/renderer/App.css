@@ -72,7 +72,7 @@ hr {
   max-width: 40rem;
 }
 .FileRef:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   opacity: 1;
 }
 .FileRef .Name:hover {
@@ -163,13 +163,15 @@ hr {
 .FileRefModal .FilePath {
   margin-bottom: 2rem;
 }
-
+.NameInput:hover {
+  border: 1px dashed black;
+}
 .NameInput {
+  border: 1px dashed white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-top: 0;
   color: black;
   background-color: white;
-  border: none;
   font-size: 2rem;
   font-weight: 100;
   cursor: text;
@@ -219,9 +221,13 @@ hr {
   color: black;
 }
 
+.PageInput:hover {
+  border: 1px dashed black;
+}
+
 .PageInput {
   background-color: white;
-  border: none;
+  border: 1px dashed white;
   font-weight: 100;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2rem;

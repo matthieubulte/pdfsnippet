@@ -1,6 +1,11 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-const validChannels = ['ipc-example', 'get-references', 'save-references'];
+const validChannels = [
+  'ipc-example',
+  'get-references',
+  'save-references',
+  'sup',
+];
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -12,6 +17,9 @@ contextBridge.exposeInMainWorld('electron', {
     },
     getReferences() {
       ipcRenderer.send('get-references');
+    },
+    send(key, val) {
+      ipcRenderer.send(key, val);
     },
     on(channel, func) {
       if (validChannels.includes(channel)) {

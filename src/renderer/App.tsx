@@ -57,12 +57,6 @@ const ImagePaster = ({ value, onChange }) => {
     };
   };
 
-  useEffect(() => {
-    if (!value) {
-      startWaiting();
-    }
-  }, [value]);
-
   const onClick = () => {
     if (waitingForPaste) {
       document.onpaste = function () {};
@@ -72,19 +66,17 @@ const ImagePaster = ({ value, onChange }) => {
     }
   };
 
+  const visible = waitingForPaste || value ? '' : 'Visible';
+
   return (
     <div className="ImagePaster" onClick={onClick}>
-      {waitingForPaste && (
-        <div className="Overlay Visible">
-          <div>Ctrl+V to paste new image</div>
-          <div>(click to cancel)</div>
-        </div>
-      )}
-      {waitingForPaste || (
-        <div className="Overlay">
+      <div className={`Overlay ${visible}`}>
+        {waitingForPaste && <div>Ctrl+V to paste new image</div>}
+        {waitingForPaste && <div>(click to cancel)</div>}
+        {(!waitingForPaste || (!value && !waitingForPaste)) && (
           <div>Click to change</div>
-        </div>
-      )}
+        )}
+      </div>
       <img className={waitingForPaste ? ['Blur'] : []} src={imgURL} />
     </div>
   );

@@ -11,6 +11,18 @@ import { resolveHtmlPath } from './util';
 
 const { exec } = require('child_process');
 
+if (process.env.NODE_ENV === 'production') {
+  const sourceMapSupport = require('source-map-support');
+  sourceMapSupport.install();
+}
+
+const isDevelopment =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+const gotopage = isDevelopment
+  ? './release/app/gotopage.scpt'
+  : path.join(process.resourcesPath, 'app.asar.unpacked', 'gotopage.scpt');
+
 const dataFileLock = new AsyncLock();
 
 export default class AppUpdater {
@@ -24,7 +36,7 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('open-pdf', async (event, { pdfpath, page }) => {
-  exec(`osascript ./gotopage.scpt "${pdfpath}" ${page}`);
+  exec(`osascript "${gotopage}" "${pdfpath}" ${page}`);
 });
 
 ipcMain.on('save-references', async (event, references) => {
@@ -37,14 +49,6 @@ ipcMain.on('get-references', async (event) => {
   const data = await fs.readFile('./references.json');
   event.reply('get-references', JSON.parse(data));
 });
-
-if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
-}
-
-const isDevelopment =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDevelopment) {
   require('electron-debug')();
