@@ -127,22 +127,17 @@ const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
 };
 
 const ReferencesContainer = () => {
-  const defaultFileRef = () => {
-    return {
-      id: uuidv4(),
-      name: 'Jain-Marcus',
-      pdfPath:
-        '/Users/matthieubulte/Documents/university/phd/papers/Weak Convergence and Empirical Processes With Applications to Statistics by Aad W. van der Vaart, Jon A. Wellner.pdf',
-      page: 228,
-    };
-  };
-
   const [showModal, setShowModal] = useState(false);
   const [editedRef, setEditedRef] = useState(null);
-  const [fileRefs, setFileRefs] = useState([defaultFileRef()]);
+  const [fileRefs, _setFileRefs] = useState([]);
 
   const onOpenPDF = (fr) => {
     window.electron.ipcRenderer.openPdf(fr.pdfPath, fr.page);
+  };
+
+  const setFileRefs = (frs) => {
+    _setFileRefs(frs);
+    window.electron.ipcRenderer.saveReferences(frs);
   };
 
   const onRemove = (fr) => {
@@ -165,7 +160,6 @@ const ReferencesContainer = () => {
       image: '',
     });
     setShowModal(true);
-    //
   };
 
   const onCloseModal = () => {
@@ -179,6 +173,11 @@ const ReferencesContainer = () => {
     }
     setShowModal(false);
   };
+
+  useEffect(() => {
+    window.electron.ipcRenderer.getReferences();
+    window.electron.ipcRenderer.once('get-references', _setFileRefs);
+  }, [_setFileRefs]);
 
   return (
     <div className="AppContainer">

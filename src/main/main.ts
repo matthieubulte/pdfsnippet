@@ -12,6 +12,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { promises as fs } from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -27,14 +28,17 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
-
 ipcMain.on('open-pdf', async (event, { pdfpath, page }) => {
   exec(`osascript ./gotopage.scpt "${pdfpath}" ${page}`);
+});
+
+ipcMain.on('save-references', async (event, references) => {
+  fs.writeFile('./references.json', JSON.stringify(references, null, 4));
+});
+
+ipcMain.on('get-references', async (event) => {
+  const data = await fs.readFile('./references.json');
+  event.reply('get-references', JSON.parse(data));
 });
 
 if (process.env.NODE_ENV === 'production') {
