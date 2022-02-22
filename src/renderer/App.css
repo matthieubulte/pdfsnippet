@@ -188,10 +188,6 @@ hr {
 .ImagePaster:hover {
   border: 1px dashed black;
 }
-.Blur {
-  filter: blur(2px);
-  border-radius: 5px;
-}
 .ImagePaster .Overlay {
   border-radius: 5px;
   width: 100%;

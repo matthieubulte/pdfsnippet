@@ -37,6 +37,7 @@ const FilePath = ({ value, onChange }) => {
 const ImagePaster = ({ value, onChange }) => {
   const [imgURL, setImgURL] = useState(value);
   const [waitingForPaste, setWaitingForPaste] = useState(false);
+  const [isHover, setIsHover] = useState(false);
 
   const startWaiting = () => {
     setWaitingForPaste(true);
@@ -66,10 +67,16 @@ const ImagePaster = ({ value, onChange }) => {
     }
   };
 
-  const visible = waitingForPaste || value ? '' : 'Visible';
+  const visible = !waitingForPaste || !value ? '' : 'Visible';
+  const imgStyle = isHover || waitingForPaste ? { filter: 'blur(2px)' } : {};
 
   return (
-    <div className="ImagePaster" onClick={onClick}>
+    <div
+      className="ImagePaster"
+      onClick={onClick}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
       <div className={`Overlay ${visible}`}>
         {waitingForPaste && <div>Ctrl+V to paste new image</div>}
         {waitingForPaste && <div>(click to cancel)</div>}
@@ -77,7 +84,11 @@ const ImagePaster = ({ value, onChange }) => {
           <div>Click to change</div>
         )}
       </div>
-      <img className={waitingForPaste ? ['Blur'] : []} src={imgURL} />
+      <img
+        className={waitingForPaste ? ['Blur'] : []}
+        style={imgStyle}
+        src={imgURL}
+      />
     </div>
   );
 };
