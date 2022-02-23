@@ -23,6 +23,10 @@ const gotopage = isDevelopment
   ? './release/app/gotopage.scpt'
   : path.join(process.resourcesPath, 'app.asar.unpacked', 'gotopage.scpt');
 
+const dataFilePath = isDevelopment
+  ? './references.json'
+  : path.join(app.getPath('userData'), 'references.json');
+
 const dataFileLock = new AsyncLock();
 
 export default class AppUpdater {
@@ -40,14 +44,19 @@ ipcMain.on('open-pdf', async (event, { pdfpath, page }) => {
 });
 
 ipcMain.on('save-references', async (event, references) => {
-  dataFileLock.acquire('key', () =>
-    fs.writeFile('./references.json', JSON.stringify(references, null, 4))
-  );
+  dataFileLock.acquire('key', () => {
+    fs.writeFile(dataFilePath, JSON.stringify(references, null, 4));
+  });
 });
 
 ipcMain.on('get-references', async (event) => {
-  const data = await fs.readFile('./references.json');
-  event.reply('get-references', JSON.parse(data));
+  let data = [];
+  try {
+    const datastr = await fs.readFile(dataFilePath);
+    data = JSON.parse(datastr);
+  } finally {
+    event.reply('get-references', data);
+  }
 });
 
 if (isDevelopment) {

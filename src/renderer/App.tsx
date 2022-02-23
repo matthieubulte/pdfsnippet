@@ -158,7 +158,10 @@ const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
 
   const contentRow = (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div className="Name">{fileRef.name}</div>
+      <div style={{ display: 'flex', alignItems: 'baseline' }}>
+        <div className="Name">{fileRef.name}</div>
+        {/* <div className="Page">p{fileRef.page}</div> */}
+      </div>
       <div style={{ display: 'flex' }}>
         <div
           className="Button"
@@ -206,13 +209,13 @@ const ReferencesContainer = () => {
   const [fileRefs, _setFileRefs] = useState([]);
   const [searchString, setSearchString] = useState('');
 
-  const onOpenPDF = (fr) => {
-    window.electron.ipcRenderer.openPdf(fr.pdfPath, fr.page);
-  };
-
   const setFileRefs = (frs) => {
     _setFileRefs(frs);
     window.electron.ipcRenderer.saveReferences(frs);
+  };
+
+  const onOpenPDF = (fr) => {
+    window.electron.ipcRenderer.openPdf(fr.pdfPath, fr.page);
   };
 
   const onRemove = (fr) => {
@@ -232,7 +235,7 @@ const ReferencesContainer = () => {
       name: '(Untitled)',
       pdfPath: '',
       page: 1,
-      image: '',
+      imgURL: '',
     });
     setShowModal(true);
   };
@@ -244,7 +247,7 @@ const ReferencesContainer = () => {
       newRefs[index] = { ...editedRef };
       setFileRefs(newRefs);
     } else {
-      setFileRefs(fileRefs.concat([{ ...editedRef, id: uuidv4() }]));
+      setFileRefs([{ ...editedRef, id: uuidv4() }].concat(fileRefs));
     }
     setShowModal(false);
   };
@@ -268,28 +271,39 @@ const ReferencesContainer = () => {
 
   return (
     <div className="AppContainer">
-      <h1 style={{ fontWeight: 100 }}>PDF Snippets</h1>
+      <h1 style={{ fontWeight: 100, cursor: 'default' }}>PDF Snippets</h1>
       <div className="ReferencesContainer">
-        <div className="FileRef Search">
-          <input
-            placeholder="Search..."
-            type="text"
-            value={searchString}
-            onChange={(e) => {
-              setSearchString(e.target.value);
-            }}
-          />
+        <div className="Header">
+          <div className="FileRef Search">
+            <input
+              placeholder="Search..."
+              type="text"
+              value={searchString}
+              onChange={(e) => {
+                setSearchString(e.target.value);
+              }}
+            />
+            <div
+              className="Button"
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                clearSearch();
+              }}
+            >
+              ✖️
+            </div>
+          </div>
           <div
-            className="Button"
+            className="FileRef AddFileRef"
+            onClick={createReference}
             role="button"
             tabIndex={0}
-            onClick={(e) => {
-              clearSearch();
-            }}
           >
-            ✖️
+            New
           </div>
         </div>
+
         {searchOn(fileRefs).map((fr) => (
           <FileRef
             fileRef={fr}
@@ -299,14 +313,6 @@ const ReferencesContainer = () => {
             key={fr.id}
           />
         ))}
-        <div
-          className="FileRef AddFileRef"
-          onClick={createReference}
-          role="button"
-          tabIndex={0}
-        >
-          New Snippet
-        </div>
       </div>
 
       {showModal && <FileRefModal fileRef={editedRef} onClose={onCloseModal} />}

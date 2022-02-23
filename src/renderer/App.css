@@ -42,12 +42,19 @@ hr {
   overflow-y: scroll;
 }
 
+.Header {
+  display: flex;
+  width: calc(80% + 40px);
+  max-width: 42.5rem;
+  justify-content: space-between;
+}
+
 .ReferencesContainer {
   display: flex;
   flex-direction: column;
-  justify-content: baseline;
   align-items: center;
   width: 100%;
+  margin-bottom: 4rem;
 }
 
 .FileRef {
@@ -83,7 +90,19 @@ hr {
   font-weight: 100;
   font-size: 1.5rem;
 }
+.FileRef .Page {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  justify-content: unset;
+  display: flex;
+  align-items: end;
+  color: #707070;
+}
 .Search {
+  margin-right: 1rem;
+  height: 1rem;
   flex-direction: row;
 }
 .Search:hover {
@@ -108,7 +127,8 @@ hr {
   cursor: pointer;
   justify-content: center;
   flex-direction: row;
-  width: 30%;
+  width: 10%;
+  height: 1rem;
   max-width: 10rem;
   font-weight: 200;
 }

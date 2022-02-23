@@ -1,5 +1,6 @@
 {
-  "name": "PDFSnippets",
+  "name": "pdf-snippets",
+  "version": "1.0.0",
   "description": "",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -41,8 +42,7 @@
       "dist",
       "node_modules",
       "package.json",
-      "gotopage.scpt",
-      "assets/gotopage.scpt"
+      "gotopage.scpt"
     ],
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {
@@ -91,17 +91,9 @@
     },
     "extraResources": [
       "./assets/**"
-    ],
-    "publish": {
-      "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
-    }
+    ]
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
   "keywords": [
     "electron",
     "boilerplate",
