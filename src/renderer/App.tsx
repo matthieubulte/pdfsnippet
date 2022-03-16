@@ -164,6 +164,7 @@ const FileRefModal = ({ fileRef, onClose }) => {
     <input
       className="ClearInput Hoverborder"
       value={uri}
+      placeholder="Enter a URL for this reference"
       onChange={(e) => setURI(e.target.value)}
     />
   );

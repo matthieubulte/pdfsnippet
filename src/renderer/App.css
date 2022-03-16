@@ -290,3 +290,9 @@ hr {
   border: 1px dashed black;
   border-radius: 5px;
 }
+
+::placeholder {
+  font-weight: 100;
+  font-family: "Helvetica Neue";
+  color: black;
+}
