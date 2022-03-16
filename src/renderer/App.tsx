@@ -22,8 +22,8 @@ const FilePath = ({ value, onChange }) => {
   const text = path || 'Click to select a path to the PDF';
 
   return (
-    <div className="FilePath" onClick={clicked}>
-      <span>{text}</span>
+    <div className="FilePath Hoverborder" onClick={clicked}>
+      <div>{text}</div>
       <input
         ref={el}
         type="file"
@@ -67,12 +67,12 @@ const ImagePaster = ({ value, onChange }) => {
     }
   };
 
-  const visible = !waitingForPaste || !value ? '' : 'Visible';
+  const visible = waitingForPaste || !value ? 'Visible' : '';
   const imgStyle = isHover || waitingForPaste ? { filter: 'blur(2px)' } : {};
 
   return (
     <div
-      className="ImagePaster"
+      className="ImagePaster Hoverborder"
       onClick={onClick}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
@@ -80,9 +80,7 @@ const ImagePaster = ({ value, onChange }) => {
       <div className={`Overlay ${visible}`}>
         {waitingForPaste && <div>Ctrl+V to paste new image</div>}
         {waitingForPaste && <div>(click to cancel)</div>}
-        {(!waitingForPaste || (!value && !waitingForPaste)) && (
-          <div>Click to change</div>
-        )}
+        {!waitingForPaste && <div>Click to change</div>}
       </div>
       <img
         className={waitingForPaste ? ['Blur'] : []}
@@ -93,17 +91,34 @@ const ImagePaster = ({ value, onChange }) => {
   );
 };
 
+const RefTypeRadio = ({ value, onChange }) => {
+  const [type, setType] = useState(value);
+  const toggle = () => onChange(value === 'pdf' ? 'web' : 'pdf');
+  return (
+    <div className="RefTypeRadio Hoverborder" onClick={toggle}>
+      <span className={value == 'pdf' ? 'RadioSelected' : 'RadioEmpty'}>
+        PDF
+      </span>
+      <span className={value == 'web' ? 'RadioSelected' : 'RadioEmpty'}>
+        Web
+      </span>
+    </div>
+  );
+};
+
 const FileRefModal = ({ fileRef, onClose }) => {
   const [name, setName] = useState(fileRef.name);
+  const [type, setType] = useState(fileRef.type);
   const [page, setPage] = useState(fileRef.page);
-  const [pdfPath, setPdfPath] = useState(fileRef.pdfPath);
+  const [uri, setURI] = useState(fileRef.uri);
   const [imgURL, setImgURL] = useState(fileRef.imgURL);
 
   const leave = () => {
     fileRef.name = name;
     fileRef.page = page;
-    fileRef.pdfPath = pdfPath;
+    fileRef.uri = uri;
     fileRef.imgURL = imgURL;
+    fileRef.type = type;
 
     onClose();
   };
@@ -125,35 +140,57 @@ const FileRefModal = ({ fileRef, onClose }) => {
     document.addEventListener('keydown', escFunction, false);
   });
 
+  const pageInput = (
+    <div className="PageInput Hoverborder">
+      <span>p</span>
+      <input
+        placeholder="Page"
+        type="number"
+        value={page}
+        min={1}
+        onChange={(e) => setPage(e.target.value)}
+      />
+    </div>
+  );
+
+  const pdfInputs = (
+    <div className="PdfInputsLine">
+      <FilePath value={uri} onChange={setURI} />
+      {pageInput}
+    </div>
+  );
+
+  const urlInput = (
+    <input
+      className="ClearInput Hoverborder"
+      value={uri}
+      onChange={(e) => setURI(e.target.value)}
+    />
+  );
+
   return (
     <div id="ModalBackground" className="ModalBackground" onClick={onClick}>
       <div className="FileRefModal">
         <div className="FirstLine">
           <input
-            className="NameInput"
+            className="NameInput ClearInput Hoverborder"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <div className="PageInput">
-            <span>p</span>
-            <input
-              placeholder="Page"
-              type="number"
-              value={page}
-              min={1}
-              onChange={(e) => setPage(e.target.value)}
-            />
-          </div>
+          <RefTypeRadio value={type} onChange={setType} />
         </div>
 
-        <FilePath value={pdfPath} onChange={setPdfPath} />
+        <div className="SecondLine">
+          {type === 'pdf' && pdfInputs}
+          {type === 'web' && urlInput}
+        </div>
         <ImagePaster value={imgURL} onChange={setImgURL} />
       </div>
     </div>
   );
 };
 
-const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
+const FileRef = ({ fileRef, onOpen, onRemove, onEdit }) => {
   const hasImg = !!fileRef.imgURL;
 
   const contentRow = (
@@ -169,7 +206,7 @@ const FileRef = ({ fileRef, onOpenPDF, onRemove, onEdit }) => {
           tabIndex={0}
           onClick={(e) => {
             e.stopPropagation();
-            onOpenPDF(fileRef);
+            onOpen(fileRef);
           }}
         >
           🧿
@@ -214,8 +251,12 @@ const ReferencesContainer = () => {
     window.electron.ipcRenderer.saveReferences(frs);
   };
 
-  const onOpenPDF = (fr) => {
-    window.electron.ipcRenderer.openPdf(fr.pdfPath, fr.page);
+  const onOpen = (fr) => {
+    if (fr.type === 'pdf') {
+      window.electron.ipcRenderer.openPdf(fr.uri, fr.page);
+    } else {
+      window.electron.ipcRenderer.openWeb(fr.uri);
+    }
   };
 
   const onRemove = (fr) => {
@@ -233,7 +274,8 @@ const ReferencesContainer = () => {
   const createReference = () => {
     setEditedRef({
       name: '(Untitled)',
-      pdfPath: '',
+      type: 'pdf',
+      uri: '',
       page: 1,
       imgURL: '',
     });
@@ -307,7 +349,7 @@ const ReferencesContainer = () => {
         {searchOn(fileRefs).map((fr) => (
           <FileRef
             fileRef={fr}
-            onOpenPDF={onOpenPDF}
+            onOpen={onOpen}
             onRemove={onRemove}
             onEdit={onEdit}
             key={fr.id}

@@ -27,6 +27,8 @@ const dataFilePath = isDevelopment
   ? './references.json'
   : path.join(app.getPath('userData'), 'references.json');
 
+const tmpDataFilePath = `${dataFilePath}.tmp`;
+
 const dataFileLock = new AsyncLock();
 
 export default class AppUpdater {
@@ -43,9 +45,14 @@ ipcMain.on('open-pdf', async (event, { pdfpath, page }) => {
   exec(`osascript "${gotopage}" "${pdfpath}" ${page}`);
 });
 
+ipcMain.on('open-web', async (event, { url }) => {
+  exec(`open "${url}"`);
+});
+
 ipcMain.on('save-references', async (event, references) => {
-  dataFileLock.acquire('key', () => {
-    fs.writeFile(dataFilePath, JSON.stringify(references, null, 4));
+  dataFileLock.acquire('key', async () => {
+    await fs.writeFile(tmpDataFilePath, JSON.stringify(references, null, 4));
+    exec(`mv ${tmpDataFilePath} ${dataFilePath}`);
   });
 });
 

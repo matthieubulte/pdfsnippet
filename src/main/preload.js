@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld('electron', {
     openPdf(pdfpath, page) {
       ipcRenderer.send('open-pdf', { pdfpath, page });
     },
+    openWeb(url) {
+      ipcRenderer.send('open-web', { url });
+    },
     saveReferences(references) {
       ipcRenderer.send('save-references', references);
     },

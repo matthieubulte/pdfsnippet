@@ -171,45 +171,33 @@ hr {
 }
 
 .FilePath {
-  border: 1px dashed white;
   cursor: pointer;
-  border-radius: 5px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 100;
+  width: 100%;
 }
-.FilePath:hover {
-  border: 1px dashed black;
-}
-.FileRefModal .FilePath {
-  margin-bottom: 2rem;
-}
-.NameInput:hover {
-  border: 1px dashed black;
-}
-.NameInput {
-  border: 1px dashed white;
+
+.ClearInput {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-top: 0;
   color: black;
   background-color: white;
-  font-size: 2rem;
   font-weight: 100;
   cursor: text;
   width: 100%;
+  font-size: 1rem;
+}
+
+.NameInput {
+  font-size: 2rem;
 }
 
 .ImagePaster {
   cursor: pointer;
-  border: 1px dashed white;
-  border-radius: 5px;
   position: sticky;
   min-height: 7rem;
 }
-.ImagePaster:hover {
-  border: 1px dashed black;
-}
 .ImagePaster .Overlay {
-  border-radius: 5px;
   width: 100%;
   height: 100%;
   top: 0;
@@ -237,16 +225,10 @@ hr {
   color: black;
 }
 
-.PageInput:hover {
-  border: 1px dashed black;
-}
-
 .PageInput {
   background-color: white;
-  border: 1px dashed white;
   font-weight: 100;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 2rem;
   display: flex;
   justify-content: flex-end;
 }
@@ -256,7 +238,6 @@ hr {
   border: none;
   font-weight: 100;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 2rem;
   width: 50%;
 }
 
@@ -265,4 +246,47 @@ hr {
   justify-content: space-between;
   margin-bottom: 2rem;
   width: 100%;
+}
+
+.SecondLine {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.PdfInputsLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px dashed white;
+}
+
+.RefTypeRadio {
+  font-weight: 100;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  user-select: none;
+}
+
+.RefTypeRadio span {
+  padding: 0.1rem;
+}
+
+.RefTypeRadio span:hover {
+  cursor: pointer;
+}
+
+.RefTypeRadio .RadioSelected {
+  background-color: #cecece;
+  border-radius: 0.2rem;
+}
+
+.Hoverborder {
+  border: 1px dashed white;
+  border-radius: 5px;
+}
+.Hoverborder:hover {
+  border: 1px dashed black;
+  border-radius: 5px;
 }
