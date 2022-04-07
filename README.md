@@ -7,4 +7,4 @@ PDF references also support providing a page number, which then allows PDF Snipp
 
 This app was built using [Electron React Boilerplate](https://github.com/electron-react-boilerplate).
 
-[^1]: I realized later that the word snippet is not right here, but that doesn't really matter. Also, the tool evolved to also handle links to webpages. So, both PDF and Snippets in 'PDF Snippets' are wrong.
+[^1]: I realized later that the word snippet is not right here, but that doesn't really matter. Also, the tool evolved to handle links to webpages. So, both PDF and Snippets in 'PDF Snippets' are wrong.
